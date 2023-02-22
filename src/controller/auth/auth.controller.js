@@ -6,14 +6,21 @@ const {signToken} = require("../../tools/tools");
 
 exports.register =  (req,res)=>{
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-
-    const newUser = new User({
+    req.body.password = hashedPassword
+    if(req.body.UserType !== undefined) {
+      if(req.body.UserType === false){
+        req.body.UserType = "CUSTOMER";
+      } else if (req.body.UserType === true) {
+        req.body.UserType = "OWNER";
+      }
+    }
+    /*const newUser = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         password: hashedPassword
-    });
-    newUser.save().then((user)=>{
+    });*/
+    User.create(req.body).then((user)=>{
         var userToken =  signToken({user_id: user._id,isAdmin: user.isAdmin,UserType: user.UserType} , process.env.JWT_SECRET);
         return res.send({
             message: "created successfully",

@@ -21,6 +21,7 @@ exports.createPlace = (req,res) => {
     // });
     //console.log(newPlace,req.body.pricing.perDay);
     req.body.owner = req.userToken.id;
+    console.log(req.body);
     Place.create(req.body).then((place)=> {
         User.findByIdAndUpdate({_id: req.userToken.id},{$push: {places: place}},{new: true}).then((user) => {
             console.log(user)
