@@ -3,6 +3,7 @@ const Place = require("../model/place.model");
 const Booking = require("../model/booking.model");
 const { response } = require("express");
 const { param } = require("../route");
+const placeModel = require("../model/place.model");
 
 exports.createBooking = (req,res) => {
     req.body.customer = req.userToken.id;
@@ -31,7 +32,7 @@ exports.getBookings = (req, res)=> {
 }
 
 exports.getMyBooking = (req, res) => {
-    User.findById(req.userToken.id).populate('booking').then((user)=>{
+    User.findById(req.userToken.id).populate({path: "booking", populate: [{path:"owner"},{path:"place"},{path:"customer"}]}).then((user)=>{
         res.send(user.booking)
     }).catch((err)=> {
         res.status(400).send(err);
@@ -39,9 +40,19 @@ exports.getMyBooking = (req, res) => {
 }
 
 exports.getMyTravel = (req, res) => {
-    User.findById(req.userToken.id).populate('travel').then((user)=>{
+    User.findById(req.userToken.id).populate({path: "travel", populate: [{path:"owner"},{path:"place"},{path:"customer"}]}).then((user)=>{
         res.send(user.travel)
     }).catch((err)=> {
         res.status(400).send(err);
+    })
+}
+
+exports.updateBooking = (req,res) => {
+    console.log(req)
+    let update = {
+        status: req.params.status
+    }
+    Booking.findByIdAndUpdate({_id: req.params.id},update,{new: true}).then((booking)=> {
+        res.send(booking);
     })
 }

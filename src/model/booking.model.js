@@ -17,6 +17,10 @@ const typeSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
+    price:{
+        type: Number,
+        required: true,
+    },
     status: {
         type: String,
         enum : ['WAITING','VALIDATE','DECLINE','PAID'],

@@ -21,7 +21,7 @@ exports.register =  (req,res)=>{
         password: hashedPassword
     });*/
     User.create(req.body).then((user)=>{
-        var userToken =  signToken({user_id: user._id,isAdmin: user.isAdmin,UserType: user.UserType} , process.env.JWT_SECRET);
+        var userToken =  signToken({user_id: user._id,email: user.email,isAdmin: user.isAdmin,UserType: user.UserType} , process.env.JWT_SECRET);
         return res.send({
             message: "created successfully",
             token: userToken
@@ -49,6 +49,7 @@ exports.login = (req, res) => {
         }
         const userToken = signToken({
           id: user._id,
+          email: user.email,
           isAdmin: user.isAdmin,
           UserType: user.UserType
         }, process.env.JWT_SECRET)
@@ -56,6 +57,7 @@ exports.login = (req, res) => {
         return res.send({
           auth:true,
           message:"User logged",
+          user: user,
           token: userToken
         })
   
@@ -63,4 +65,24 @@ exports.login = (req, res) => {
       .catch((err) => {
         res.status(400).send(err);
       })
+  }
+
+  exports.refreshLogin = (req,res) => {
+    User.findOne({ email: req.userToken.email })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found",
+          auth: false
+        })
+      }
+      return res.send({
+        auth:true,
+        message:"User logged",
+        user: user,
+      })
+    })
+    .catch((err) => {
+      res.status(400).send(err);
+    })
   }

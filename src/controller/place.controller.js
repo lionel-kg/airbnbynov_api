@@ -52,10 +52,8 @@ exports.getPlaces = (req, res) => {
 
 
 exports.getMyPlaces = (req, res) => {
-    console.log(res.userToken)
     User.findById(req.userToken.id).populate('places').then((user)=>{
         res.send(user.places)
-        console.log(user.places)
     }).catch((err)=> {
         res.status(400).send(err);
     })
@@ -82,7 +80,6 @@ exports.updateMyPlace = (req, res) => {
             if( id === req.params.id) {
                 Place.findByIdAndUpdate({_id: id},update,{new: true} )
                 .then((newPlace) => { 
-                    console.log(newPlace)
                     return res.send(newPlace); 
                 })
             } 
@@ -144,7 +141,6 @@ exports.filterPlace = async (req,res) =>{
     if (params.type !== undefined && params.type !== null && params !== "") {
         filter.type = params.type;
     }
-   console.log(filter)
     Place.find(filter).then((place)=> {
         res.send(place);
     }).catch((err)=> {
