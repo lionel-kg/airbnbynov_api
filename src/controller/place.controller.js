@@ -52,8 +52,9 @@ exports.getPlaces = (req, res) => {
 
 
 exports.getMyPlaces = (req, res) => {
+    console.log(res.userToken)
     User.findById(req.userToken.id).populate('places').then((user)=>{
-        res.send(user)
+        res.send(user.places)
         console.log(user.places)
     }).catch((err)=> {
         res.status(400).send(err);
@@ -61,11 +62,9 @@ exports.getMyPlaces = (req, res) => {
 }
 
 exports.getMyPlace = (req, res) => {
-    console.log(typeof User)
     User.findById(req.userToken.id).populate('places').then((user)=>{
         user.places.forEach(place => {
             if(place._id.toString() === req.params.id) {
-                console.log(typeof place);
                 res.send(place)
             }
         });
@@ -73,6 +72,7 @@ exports.getMyPlace = (req, res) => {
         res.status(400).send(err);
     })
 }
+
 exports.updateMyPlace = (req, res) => {
     var update = req.body;
     User.findById(req.userToken.id).populate('places').then((user)=>{

@@ -7,8 +7,8 @@ const verifyToken = require('../middleware/verifyToken');
 
 router.post("/",verifyToken ,verifyOwner , placeController.createPlace);
 router.get("/", placeController.getPlaces);
-router.get("/:id", placeController.getPlace);
 router.get("/me",  verifyToken, placeController.getMyPlaces);
+router.get("/:id", placeController.getPlace);
 router.get("/me/:id",  verifyToken, verifyOwner , placeController.getMyPlace);
 router.put("/me/:id",  verifyToken, verifyOwner , placeController.updateMyPlace);
 router.delete("/me/:id",  verifyToken, verifyOwner , placeController.deleteMyPlace);

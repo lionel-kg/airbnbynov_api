@@ -2,13 +2,20 @@ const mongoose = require("mongoose");
 
 const typeSchema = mongoose.Schema({
     place: {
-        type: mongoose.Schema.Types.ObjectId, ref: "Place"
+        type: mongoose.Schema.Types.ObjectId, ref: "Place",
+        required:true,
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId, ref: "User"
+        type: mongoose.Schema.Types.ObjectId, ref: "User",
+        required:true,
     },
     customer: {
-        type: mongoose.Schema.Types.ObjectId, ref: "User"
+        type: mongoose.Schema.Types.ObjectId, ref: "User",
+        required:true,
+    },
+    nbTraveler: {
+        type: Number,
+        required: true,
     },
     status: {
         type: String,
@@ -17,9 +24,11 @@ const typeSchema = mongoose.Schema({
     },
     dateStart:{ 
         type: Date, 
+        required:true,
     },
     dateEnd: {
         type: Date,
+        required:true,
     },
     createdAt: { 
         type: Date, 
@@ -28,4 +37,4 @@ const typeSchema = mongoose.Schema({
     
 })
 
-module.exports = mongoose.model("status", typeSchema);
+module.exports = mongoose.model("Booking", typeSchema);
