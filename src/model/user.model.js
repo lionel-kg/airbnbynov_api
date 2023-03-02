@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const placeModel = require("../model/place.model");
 
 const userSchema = mongoose.Schema({
     firstName: {
@@ -47,4 +48,10 @@ const userSchema = mongoose.Schema({
         {type: mongoose.Schema.Types.ObjectId, ref: "Booking"}
     ]
 })
+
+userSchema.pre('remove', async function(next) {
+    const places = await placeModel.find({ _id: { $in: this.places } });
+    await Promise.all(places.map(place => place.remove()));
+    next();
+  });
 module.exports = mongoose.model("User",userSchema);

@@ -9,10 +9,10 @@ exports.createBooking = (req,res) => {
     req.body.customer = req.userToken.id;
     Booking.create(req.body).then((booking)=> {
         User.findByIdAndUpdate({_id: req.userToken.id},{$push: {travel: booking}},{new: true}).then((traveler) => {
-            console.log(traveler)
+            // console.log(traveler)
         }).catch ((err) => res.status(400).send(err));
         User.findByIdAndUpdate({_id: req.body.owner},{$push: {booking: booking}},{new: true}).then((owner) => {
-            console.log(owner)
+            // console.log(owner)
         }).catch ((err) => res.status(400).send(err));
         return res.send({
             message: "create successfully",
@@ -24,7 +24,7 @@ exports.createBooking = (req,res) => {
 }
 
 exports.getBookings = (req, res)=> {
-    Booking.find().then((bookings)=> {
+    Booking.find().populate([{path:"owner"},{path:"place"},{path:"customer"}]).then((bookings)=> {
         res.send(bookings);
     }).catch((err)=>{
         return res.status(404).send(err);
@@ -48,7 +48,6 @@ exports.getMyTravel = (req, res) => {
 }
 
 exports.updateBooking = (req,res) => {
-    console.log(req)
     let update = {
         status: req.params.status
     }

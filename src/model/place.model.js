@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const bookingModel = require("./booking.model");
 
 const placeSchema = mongoose.Schema({
     title: {
@@ -31,7 +32,7 @@ const placeSchema = mongoose.Schema({
         type: String,
         required: true,
         minLength: 50,
-        maxLength: 300
+        maxLength: 1500
     },
 
     address: {
@@ -63,5 +64,13 @@ const placeSchema = mongoose.Schema({
     }
 
 })
+
+placeSchema.pre('remove', async function () {
+    const place = this;
+
+    await bookingModel.deleteMany({ place: place._id });
+});
+
+
 
 module.exports = mongoose.model("Place", placeSchema);

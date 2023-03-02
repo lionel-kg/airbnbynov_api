@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const typeSchema = mongoose.Schema({
+const BookingSchema = mongoose.Schema({
     place: {
         type: mongoose.Schema.Types.ObjectId, ref: "Place",
         required:true,
@@ -41,4 +41,4 @@ const typeSchema = mongoose.Schema({
     
 })
 
-module.exports = mongoose.model("Booking", typeSchema);
+module.exports = mongoose.model("Booking", BookingSchema);

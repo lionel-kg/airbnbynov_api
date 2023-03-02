@@ -14,16 +14,11 @@ exports.register =  (req,res)=>{
         req.body.UserType = "OWNER";
       }
     }
-    /*const newUser = new User({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: hashedPassword
-    });*/
     User.create(req.body).then((user)=>{
-        var userToken =  signToken({user_id: user._id,email: user.email,isAdmin: user.isAdmin,UserType: user.UserType} , process.env.JWT_SECRET);
+        var userToken =  signToken({id: user._id,email: user.email,isAdmin: user.isAdmin,UserType: user.UserType} , process.env.JWT_SECRET);
         return res.send({
             message: "created successfully",
+            user: user,
             token: userToken
         });
     }).catch(err=> {

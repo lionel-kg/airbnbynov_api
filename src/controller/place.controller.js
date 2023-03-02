@@ -21,10 +21,9 @@ exports.createPlace = (req,res) => {
     // });
     //console.log(newPlace,req.body.pricing.perDay);
     req.body.owner = req.userToken.id;
-    console.log(req.body);
     Place.create(req.body).then((place)=> {
         User.findByIdAndUpdate({_id: req.userToken.id},{$push: {places: place}},{new: true}).then((user) => {
-            console.log(user)
+            // console.log(user)
 
         }).catch ((err) => res.status(400).send(err));
         return res.send({
@@ -83,7 +82,6 @@ exports.updateMyPlace = (req, res) => {
                     return res.send(newPlace); 
                 })
             } 
-            return res.status(400).send({err: "This place doesn't belongs to you therefore you can't update it"})
         });
     } else {
         return res.status(400).send({err: "places not found"});
@@ -94,18 +92,28 @@ exports.updateMyPlace = (req, res) => {
 }
 
 exports.deleteMyPlace = (req, res) => {
+    let isBelongs = false;
     User.findById(req.userToken.id).populate('places').then((user)=>{
         if(user.places !== null && user.places.length > 0) {
+            arrayPlaces = user.places.filter((place) => {
+                if (place._id.toString() !== req.params.id) {
+                  return place;
+                } 
+            });
             user.places.forEach(place => {
                 var id = place._id.toString();
                 if( id === req.params.id) {
-                    Place.findByIdAndDelete({_id: id})
+                    isBelongs = true;
+                    Place.findById({_id: id})
                     .then((result)=>{
+                        user.places = arrayPlaces;
+                        result.remove();
+                        user.save((newUser)=>{
+                            // console.log(newUser)
+                        });
                         return res.send({message: `place with id ${result._id} successfully delete`})
                     })
-                } else if (id !== req.params.id) {
-                    return res.status(400).send({err: "This place doesn't belongs to you therefore you can't delete it"})
-                }
+                } 
             });
         } else {
             return res.status(400).send({err: "places not found"});

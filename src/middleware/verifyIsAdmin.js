@@ -8,7 +8,6 @@ function verifyAdmin(req, res, next){
             message: "You must be an admin"
         })
     }
-    console.log(req.userToken.isAdmin)
     next();
 }
 
