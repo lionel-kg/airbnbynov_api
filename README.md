@@ -10,4 +10,4 @@ j'ai push mon .env afin que vous ayez acces a ma bdd mongo directement.
 
 - mot de passe : Password30!
 
-ce mot de passe est commun a tout les utilisateur.
+ce mot de passe est commun a tous les utilisateurs.
