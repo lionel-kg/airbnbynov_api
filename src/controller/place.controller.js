@@ -143,11 +143,27 @@ exports.filterPlace = async (req,res) =>{
     if( price_min !== null && price_max !== null){
         filter["pricing.perDay"] = {$gte: price_min, $lte: price_max};
     } 
+    if( price_min !== null && price_max === null){
+        filter["pricing.perDay"] = {$gte: price_min};
+    } 
+    if( price_min === null && price_max !== null){
+        filter["pricing.perDay"] = {$lte: price_max};
+    } 
     if( capacity_min !== null && capacity_max !== null){
         filter.capacity = {$gte: capacity_min, $lte: capacity_max};
     } 
+    if( capacity_min !== null && capacity_max === null){
+        filter.capacity = {$gte: capacity_min};
+    } 
+    if( capacity_min === null && capacity_max !== null){
+        filter.capacity = { $lte: capacity_max};
+    } 
+
     if (params.type !== undefined && params.type !== null && params !== "") {
         filter.type = params.type;
+    }
+    if(filter.type !== undefined && filter.type !== null && filter.type === ""){
+        delete filter.type
     }
     Place.find(filter).then((place)=> {
         res.send(place);
